@@ -1,57 +1,3 @@
-////////////////////////////////////////////
-// Cookie Helper Functions 🍪
-////////////////////////////////////////////
-
-/**
- * checks if cookie exists
- * @param  {string}  cname name of cookie being checked
- * @return {boolean}       true or false, depending on whether or not cookie exists
- */
-const cExist = cname => (gimmeACookie(cname) != "" ? true : false);
-
-/**
- * deletes cookie with given name
- * @param  {string} cname name of cookie to be eaten
- * @return {void}         returns nothing
- */
-function eatCookie(cname) {
-  document.cookie = cname + "=; Max-Age=-99999999;";
-}
-
-/**
- * function to set/create a cookie given required values
- * @param {string}  cname  name of cookie to be set/created
- * @param {string}  cvalue value of newly set/created cookie
- * @param {integer} exdays days until cookie expires
- */
-function bakeCookie(cname, cvalue, exdays) {
-  let d = new Date();
-  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-  let expires = "expires=" + d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-/**
- * function that returns the value of an existing cookie
- * @param  {string} cname name of cookie being retrieved
- * @return {string}       value of cookie being retrieved, if cookie does not exist returns empty string;
- */
-function gimmeACookie(cname) {
-  const name = cname + "=";
-  const cookE = document.cookie;
-  const ca = cookE.split(";");
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == " ") {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
 (() =>{
   console.log(`Client Scripts successfully loaded.`);
 
@@ -145,6 +91,7 @@ function gimmeACookie(cname) {
   // Cookie Name
   const cookieName = "defaultSched";
 
+
   const switcher = document.getElementsByTagName("button")[0]; // Button that switches schedule
   const switcherTextEle = document.getElementById("button-text"); // Button text
 
@@ -215,7 +162,6 @@ function gimmeACookie(cname) {
 
       // Switching button text to reflect current schedule
       switcherTextEle.innerText = "Afternoon Schedule";
-      bakeCookie(cookieName, "afternoon", diff);
     }
     // If the morning acts aren't visible then make them visible
     else {
@@ -232,7 +178,6 @@ function gimmeACookie(cname) {
 
       // Switching button text to reflect current schedule
       switcherTextEle.innerText = "Morning Schedule";
-      bakeCookie(cookieName, "morning", diff);
     }
     // Putting button on cooldown since it was clicked
     cooldown();
@@ -240,28 +185,14 @@ function gimmeACookie(cname) {
 
   // Default schedule is the morning
   if(switcher){
-    if (cExist(cookieName)) {
-    if (gimmeACookie(cookieName) === "afternoon") {
-      afternoonActs.forEach(ele => {
-        ele.style.display = "grid";
-        ele.setAttribute("data-isVis", "yes");
-      });
-      morningActs.forEach(ele => {
-        ele.style.display = "none";
-        ele.setAttribute("data-isVis", "no");
-      });
-      switcherTextEle.innerText = "Afternoon Schedule";
-    }
-    } else {
-      afternoonActs.forEach(ele => {
-        ele.style.display = "none";
-        ele.setAttribute("data-isVis", "no");
-      });
-      morningActs.forEach(ele => {
-        ele.setAttribute("data-isVis", "yes");
-      });
-      switcherTextEle.innerText = "Morning Schedule";
-    }
+    afternoonActs.forEach(ele => {
+      ele.style.display = "none";
+      ele.setAttribute("data-isVis", "no");
+    });
+    morningActs.forEach(ele => {
+      ele.setAttribute("data-isVis", "yes");
+    });
+    switcherTextEle.innerText = "Morning Schedule";
     switcher.addEventListener("click", schedSwapper);
   }
 
